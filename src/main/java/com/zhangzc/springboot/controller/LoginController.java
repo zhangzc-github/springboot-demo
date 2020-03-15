@@ -1,14 +1,14 @@
 package com.zhangzc.springboot.controller;
 
+import com.zhangzc.springboot.dao.DepartmentDao;
 import com.zhangzc.springboot.dao.EmployeeDao;
+import com.zhangzc.springboot.entities.Department;
 import com.zhangzc.springboot.entities.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collection;
@@ -19,6 +19,8 @@ public class LoginController {
 
     @Autowired
     private EmployeeDao employeeDao;
+    @Autowired
+    private DepartmentDao departmentDao;
 
     @RequestMapping("/user/login")
     public String login(@RequestParam("username") String username,
@@ -38,5 +40,39 @@ public class LoginController {
         Collection<Employee> emps = employeeDao.getAll();
         model.addAttribute("emps",emps);
         return "list";
+    }
+
+    @GetMapping("/emp")
+    public String toAddEmpPage(Model model) {
+        Collection<Department> depts = departmentDao.getDepartments();
+        model.addAttribute("depts", depts);
+        return "add";
+    }
+
+    @PostMapping("/emp")
+    public String addEmp(Employee employee) {
+        employeeDao.save(employee);
+        return "redirect:/emps";
+    }
+
+    @GetMapping("/emp/{id}")
+    public String getEmp(@PathVariable("id") Integer id,
+                         Model model) {
+        Employee emp = employeeDao.get(id);
+        Collection<Department> depts = departmentDao.getDepartments();
+        model.addAttribute("depts", depts);
+        model.addAttribute("emp", emp);
+        return "add";
+    }
+    @PutMapping("/emp")
+    public String editEmp(Employee employee) {
+        employeeDao.save(employee);
+        return "redirect:/emps";
+    }
+
+    @DeleteMapping("/emp/{id}")
+    public String deleteEmp(@PathVariable("id") Integer id) {
+        employeeDao.delete(id);
+        return "redirect:/emps";
     }
 }
