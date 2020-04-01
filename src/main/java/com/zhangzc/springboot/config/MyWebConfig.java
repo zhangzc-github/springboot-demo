@@ -28,12 +28,12 @@ public class MyWebConfig implements WebMvcConfigurer {
         registry.addViewController("/main").setViewName("dashboard");
     }
 
-    /*@Override
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/","/user/login","/webjars/**","/favicon.ico","/asserts/**");
-    }*/
+    }
 
     @Bean
     public LocaleResolver localeResolver() {

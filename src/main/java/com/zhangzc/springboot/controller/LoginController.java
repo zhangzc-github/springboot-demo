@@ -66,7 +66,7 @@ public class LoginController {
     }
     @PutMapping("/emp")
     public String editEmp(Employee employee) {
-        employeeDao.save(employee);
+        employeeDao.update(employee);
         return "redirect:/emps";
     }
 

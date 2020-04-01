@@ -1,53 +1,30 @@
 package com.zhangzc.springboot.dao;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.zhangzc.springboot.entities.Department;
 import com.zhangzc.springboot.entities.Employee;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 
+@Mapper
+public interface EmployeeDao {
+	@Insert("insert into employee(last_name,email,gender,birth,d_id) values(#{lastName},#{email},#{gender},#{birth},#{department.id})")
+	void save(Employee employee);
 
-@Repository
-public class EmployeeDao {
+	@Select("select * from employee")
+	@Results(id="Employees",value = {
+			@Result(column = "d_id",property = "department",
+			one = @One(select = "com.zhangzc.springboot.dao.DepartmentDao.getDepartment",fetchType = FetchType.LAZY))
+	})
+	Collection<Employee> getAll();
 
-	private static Map<Integer, Employee> employees = null;
-	
-	@Autowired
-	private DepartmentDao departmentDao;
-	
-	static{
-		employees = new HashMap<Integer, Employee>();
-
-		employees.put(1001, new Employee(1001, "E-AA", "aa@163.com", 1, new Department(101, "D-AA")));
-		employees.put(1002, new Employee(1002, "E-BB", "bb@163.com", 1, new Department(102, "D-BB")));
-		employees.put(1003, new Employee(1003, "E-CC", "cc@163.com", 0, new Department(103, "D-CC")));
-		employees.put(1004, new Employee(1004, "E-DD", "dd@163.com", 0, new Department(104, "D-DD")));
-		employees.put(1005, new Employee(1005, "E-EE", "ee@163.com", 1, new Department(105, "D-EE")));
-	}
-	
-	private static Integer initId = 1006;
-	
-	public void save(Employee employee){
-		if(employee.getId() == null){
-			employee.setId(initId++);
-		}
-		
-		employee.setDepartment(departmentDao.getDepartment(employee.getDepartment().getId()));
-		employees.put(employee.getId(), employee);
-	}
-	
-	public Collection<Employee> getAll(){
-		return employees.values();
-	}
-	
-	public Employee get(Integer id){
-		return employees.get(id);
-	}
-	
-	public void delete(Integer id){
-		employees.remove(id);
-	}
+	@Select("select * from employee where id=#{id}")
+	@Results(id="Employee",value = {
+			@Result(column = "d_id",property = "department",
+					one = @One(select = "com.zhangzc.springboot.dao.DepartmentDao.getDepartment",fetchType = FetchType.LAZY))
+	})
+	Employee get(Integer id);
+	@Delete("delete from employee where id = #{id}")
+	void delete(Integer id);
+	@Update("update employee set last_name=#{lastName},email=#{email},gender=#{gender},birth=#{birth},d_id=#{department.id} where id=#{id}")
+	void update(Employee employee);
 }
