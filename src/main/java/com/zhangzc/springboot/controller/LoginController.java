@@ -4,6 +4,7 @@ import com.zhangzc.springboot.dao.DepartmentDao;
 import com.zhangzc.springboot.dao.EmployeeDao;
 import com.zhangzc.springboot.entities.Department;
 import com.zhangzc.springboot.entities.Employee;
+import com.zhangzc.springboot.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

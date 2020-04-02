@@ -3,6 +3,7 @@ package com.zhangzc.springboot.controller;
 import com.zhangzc.springboot.dao.DepartmentDao;
 import com.zhangzc.springboot.dao.DepartmentMapper;
 import com.zhangzc.springboot.entities.Department;
+import com.zhangzc.springboot.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,8 @@ public class HelloController {
     JdbcTemplate jdbcTemplate;
     @Autowired
     DepartmentMapper departmentMapper;
+    @Autowired
+    private DepartmentService departmentService;
 
     @RequestMapping("/hello")
     @ResponseBody
@@ -36,6 +39,7 @@ public class HelloController {
     @RequestMapping("query/depts/{id}")
     @ResponseBody
     public Department getDepartmentById(@PathVariable("id") int id){
-        return departmentMapper.findById(id);
+        //return departmentMapper.findById(id);
+        return departmentService.getDeptById(id);
     }
 }
