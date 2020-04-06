@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhangzc.springboot.dao.EmployeeMapper">
+    <insert id="insert">
+        insert into employee(last_name,gender,email,birth,d_id)
+        values (#{lastName},#{gender},#{email},#{birth},#{department.id})
+    </insert>
+    <delete id="delete">
+        delete from employee where id=#{id}
+    </delete>
+    <update id="update">
+        update employee set last_name=#{lastName},gender=#{gender},email=#{email},birth=#{birth},
+        d_id=#{department.id} where id=#{id}
+    </update>
+    <select id="selectOne" resultMap="employeeResult">
+        SELECT e.*,d.department_name from employee e
+        left join department d on e.d_id=d.id
+        WHERE e.id=#{id};
+    </select>
+    <select id="selectAll" resultMap="employeeResult">
+        SELECT e.*,d.department_name from employee e
+        left join department d on e.d_id=d.id
+    </select>
+
+
+
+    <resultMap id="employeeResult" type="com.zhangzc.springboot.entities.Employee">
+        <result property="id" column="id"/>
+        <result property="lastName" column="last_name"/>
+        <result property="gender" column="gender"/>
+        <result property="email" column="email"/>
+        <result property="birth" column="birth"/>
+        <association property="department" javaType="com.zhangzc.springboot.entities.Department">
+            <result property="id" column="d_id"/>
+            <result property="departmentName" column="department_name"/>
+        </association>
+    </resultMap>
+</mapper>
