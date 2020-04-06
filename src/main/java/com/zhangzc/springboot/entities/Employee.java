@@ -1,8 +1,9 @@
 package com.zhangzc.springboot.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Employee {
+public class Employee implements Serializable {
 
 	private Integer id;
     private String lastName;

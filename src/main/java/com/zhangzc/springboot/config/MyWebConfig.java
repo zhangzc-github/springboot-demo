@@ -16,12 +16,11 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.*;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -86,15 +85,30 @@ public class MyWebConfig implements WebMvcConfigurer {
             throws UnknownHostException {
         RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
+        template.setValueSerializer(serializer());
+        template.setKeySerializer(new StringRedisSerializer());
+       /* template.setDefaultSerializer(serializer);
+        template.afterPropertiesSet();*/
+        return template;
+    }
+
+    @Bean
+    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory){
+
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer()));
+        return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(redisCacheConfiguration).build();
+    }
+
+    private Jackson2JsonRedisSerializer serializer(){
         Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        //om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        om.activateDefaultTyping(BasicPolymorphicTypeValidator.builder().allowIfBaseType(Object.class).build(),
+                ObjectMapper.DefaultTyping.NON_FINAL);
         serializer.setObjectMapper(om);
-        //template.setValueSerializer(serializer);
-        //template.setKeySerializer(new StringRedisSerializer());
-        template.setDefaultSerializer(serializer);
-        template.afterPropertiesSet();
-        return template;
+        return serializer;
     }
 }

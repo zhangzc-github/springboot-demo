@@ -30,10 +30,13 @@ class StudySpringbootApplicationTests {
         System.out.println(connection);
     }
     @Test
-    void testRedis(){
-        /*String foo = (String) redisTemplate.opsForValue().get("foo");
-        System.out.println(foo);*/
-        redisTemplate.opsForValue().set("dept",departmentMapper.findById(1));
+    void testRedis01(){
+        String foo = stringRedisTemplate.opsForValue().get("dept");
+        System.out.println(foo);
+    }
+    @Test
+    void testRedis02(){
+        redisTemplate.opsForValue().set("depts",departmentMapper.selectAll());
     }
 
 }

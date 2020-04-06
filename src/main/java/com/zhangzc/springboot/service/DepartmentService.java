@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service
 public class DepartmentService {
     @Autowired
@@ -14,6 +16,10 @@ public class DepartmentService {
     @Cacheable(value = "department")
     public Department getDeptById(int id) {
         System.out.println("from db");
-        return departmentMapper.findById(id);
+        return departmentMapper.selectOne(id);
+    }
+    @Cacheable(value = "department",key = "'list'")
+    public Collection<Department> getDepts(){
+        return departmentMapper.selectAll();
     }
 }
