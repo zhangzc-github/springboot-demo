@@ -38,15 +38,16 @@ public class MyWebConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("index");
+        registry.addViewController("/user/login").setViewName("index");
         registry.addViewController("/main").setViewName("dashboard");
     }
 
-    @Override
+   /* @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns("/","/user/login","/webjars/**","/favicon.ico","/asserts/**");
-    }
+    }*/
 
     @Bean
     public LocaleResolver localeResolver() {

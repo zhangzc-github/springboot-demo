@@ -23,7 +23,7 @@
 			<input name="password" type="password" class="form-control" placeholder="Password" required="" th:placeholder="#{login.password}">
 			<div class="checkbox mb-3">
 				<label>
-          <input type="checkbox" value="remember-me"> [[#{login.remember}]]
+          <input name="remember-me" type="checkbox"> [[#{login.remember}]]
         </label>
 			</div>
 			<button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{login.button}">Sign in</button>

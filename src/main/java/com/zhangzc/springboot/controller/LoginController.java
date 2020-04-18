@@ -26,7 +26,7 @@ public class LoginController {
     @Autowired
     private DepartmentService departmentService;
 
-    @RequestMapping("/user/login")
+    /*@RequestMapping("/user/login")
     public String login(@RequestParam("username") String username,
                         @RequestParam("password") String password,
                         Map<String, Object> map,
@@ -37,7 +37,7 @@ public class LoginController {
         }
         map.put("msg", "登录失败!");
         return "index";
-    }
+    }*/
 
     @GetMapping("/emps")
     public String getEmps(Model model) {
